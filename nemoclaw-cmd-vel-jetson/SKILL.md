@@ -99,6 +99,24 @@ The helper defaults to:
 ROBOT_BASE_URL=http://100.64.0.4:5000
 ```
 
+Motion preset values live in `scripts/car_cmd.py`. Do not invent new speed values unless the user explicitly asks for tuning.
+
+## Failure Handling
+
+If a command fails:
+
+```text
+HTTP 403 / policy_denied -> tell the user the sandbox policy blocked the REST call.
+Timeout / connection refused -> tell the user the DGX REST bridge may be down.
+No movement but command succeeds -> ask the user to check /cmd_vel echo, robot power, safety flags, or motor node.
+```
+
+After any movement failure, try stop once:
+
+```bash
+python3 /sandbox/.openclaw/skills/cmd-vel-jetson-car/scripts/car_cmd.py stop
+```
+
 ## Response Style
 
 Keep replies short.
@@ -109,4 +127,4 @@ Keep replies short.
 已停車。
 ```
 
-If a movement command fails, try stop once and briefly report the failure.
+If a movement command fails, briefly report the likely cause.
