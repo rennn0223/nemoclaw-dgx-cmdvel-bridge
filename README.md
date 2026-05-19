@@ -8,6 +8,8 @@ Project page:
 https://rennn0223.github.io/nemoclaw-dgx-cmdvel-bridge/
 ```
 
+The project page is bilingual: Traditional Chinese and English.
+
 ```text
 NemoClaw / sandbox
   -> HTTP REST /command or /stop

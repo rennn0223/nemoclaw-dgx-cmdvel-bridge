@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-Hant">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>NemoClaw DGX cmd_vel Bridge</title>
     <meta
       name="description"
-      content="Deploy a DGX Spark REST bridge for NemoClaw voice control of ROS 2 /cmd_vel Wheeltec and Jetson robot cars."
+      content="NemoClaw voice control for ROS 2 /cmd_vel Wheeltec and Jetson robot cars through a DGX Spark REST bridge."
     />
     <style>
       :root {
@@ -31,10 +31,10 @@
         margin: 0;
         font-family:
           Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
+          "Noto Sans TC", "PingFang TC", sans-serif;
         color: var(--ink);
         background: #eef2f6;
-        line-height: 1.55;
+        line-height: 1.58;
       }
 
       a {
@@ -75,7 +75,7 @@
         width: 28px;
         height: 28px;
         border-radius: 6px;
-        background: #0f766e;
+        background: var(--accent);
         position: relative;
       }
 
@@ -112,13 +112,17 @@
 
       h1 {
         font-size: clamp(38px, 5vw, 68px);
-        line-height: 1.02;
+        line-height: 1.04;
         letter-spacing: 0;
         margin: 0;
       }
 
+      .en {
+        color: var(--muted);
+      }
+
       .lead {
-        max-width: 680px;
+        max-width: 720px;
         color: var(--muted);
         font-size: 18px;
         margin: 22px 0 0;
@@ -193,7 +197,7 @@
 
       h2 {
         font-size: 28px;
-        margin: 0 0 12px;
+        margin: 0 0 8px;
         letter-spacing: 0;
       }
 
@@ -260,10 +264,6 @@
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
       }
 
-      ul {
-        padding-left: 20px;
-      }
-
       .warning {
         border-left: 4px solid var(--warn);
         background: #fff7ed;
@@ -321,42 +321,48 @@
           <span>NemoClaw DGX cmd_vel Bridge</span>
         </div>
         <div class="nav-links">
-          <a href="#install">Install</a>
-          <a href="#modes">Modes</a>
-          <a href="#voice">Voice</a>
+          <a href="#install">安裝 / Install</a>
+          <a href="#modes">模式 / Modes</a>
+          <a href="#voice">語音 / Voice</a>
           <a href="https://github.com/rennn0223/nemoclaw-dgx-cmdvel-bridge">GitHub</a>
         </div>
       </nav>
 
       <div class="shell hero">
         <div>
-          <div class="eyebrow">ROS 2 /cmd_vel control through DGX Spark</div>
-          <h1>Voice control for Wheeltec and Jetson robot cars.</h1>
+          <div class="eyebrow">透過 DGX Spark 控制 ROS 2 /cmd_vel</div>
+          <h1>
+            用 NemoClaw 語音控制 Wheeltec / Jetson 小車。
+          </h1>
           <p class="lead">
-            A small REST bridge lets NemoClaw send safe timed motion commands to one
-            or more physical robot cars over ROS 2. Use normal LAN discovery when the
-            cars are nearby, or Tailscale with FastDDS discovery when they are remote.
+            這個專案提供一個 DGX Spark REST bridge，讓 NemoClaw 可以把「前進兩秒」、
+            「右轉五秒」、「停車」這類語音指令轉成 ROS 2 <code>/cmd_vel</code>。
+            <br />
+            <span class="en">
+              A DGX Spark REST bridge for turning NemoClaw voice commands into safe,
+              timed ROS 2 <code>/cmd_vel</code> motion commands.
+            </span>
           </p>
           <div class="actions">
-            <a class="button primary" href="#install">Start deploying</a>
-            <a class="button" href="https://github.com/rennn0223/nemoclaw-dgx-cmdvel-bridge">View repository</a>
+            <a class="button primary" href="#install">開始部署 / Start</a>
+            <a class="button" href="https://github.com/rennn0223/nemoclaw-dgx-cmdvel-bridge">查看原始碼 / Repository</a>
           </div>
         </div>
 
         <div class="diagram" aria-label="Control pipeline diagram">
           <div class="node">
             <strong>NemoClaw / sandbox</strong>
-            <span>Voice or TUI command</span>
+            <span>語音或 TUI 指令 / Voice or TUI command</span>
           </div>
           <div class="arrow">↓ REST /command</div>
           <div class="node">
             <strong>DGX Spark</strong>
-            <span>Flask bridge publishes ROS 2 Twist</span>
+            <span>Flask bridge 發布 ROS 2 Twist / publishes ROS 2 Twist</span>
           </div>
           <div class="arrow">↓ /cmd_vel</div>
           <div class="node">
             <strong>Wheeltec / Jetson car(s)</strong>
-            <span>Subscribe and drive motors</span>
+            <span>訂閱並驅動馬達 / subscribe and drive motors</span>
           </div>
         </div>
       </div>
@@ -367,8 +373,8 @@
         <div class="shell">
           <div class="section-head">
             <div>
-              <h2>Quick Install</h2>
-              <p>Install the DGX or Jetson launch scripts directly from GitHub.</p>
+              <h2>快速安裝 / Quick Install</h2>
+              <p>直接從 GitHub 安裝 DGX 或 Jetson 端啟動腳本。Install launcher scripts directly from GitHub.</p>
             </div>
           </div>
           <div class="grid">
@@ -390,14 +396,19 @@
         <div class="shell">
           <div class="section-head">
             <div>
-              <h2>Choose A Network Mode</h2>
-              <p>Use one mode at a time. Do not mix LAN discovery with the Tailscale-only FastDDS profile.</p>
+              <h2>選擇網路模式 / Choose A Network Mode</h2>
+              <p>同一時間只使用一種模式。Use one mode at a time.</p>
             </div>
           </div>
           <div class="grid">
             <div class="card">
-              <h3>Mode A: Same Wi-Fi / LAN</h3>
-              <p>Use when DGX can already see car topics with <code>ros2 topic list -t</code>.</p>
+              <h3>模式 A：同 Wi-Fi / LAN</h3>
+              <p>
+                DGX 和小車在同一個 Wi-Fi，且 DGX 已經可以用 <code>ros2 topic list -t</code>
+                看到小車 topics 時使用。
+                <br />
+                <span class="en">Use normal ROS 2 LAN discovery when DGX can already see car topics.</span>
+              </p>
               <pre><code># DGX
 cd /home/nvidia
 ./auto_lan.sh
@@ -407,8 +418,12 @@ cd /home/wheeltec
 ./wheeltec_bringup_lan.sh</code></pre>
             </div>
             <div class="card">
-              <h3>Mode B: Different Networks / Tailscale</h3>
-              <p>Use when the cars are remote or LAN multicast discovery does not work.</p>
+              <h3>模式 B：不同網域 / Tailscale</h3>
+              <p>
+                DGX 和小車不在同一網路，或 LAN multicast discovery 不穩時使用。
+                <br />
+                <span class="en">Use Tailscale + FastDDS discovery for remote or cross-network cars.</span>
+              </p>
               <pre><code># DGX
 cd /home/nvidia
 ./auto_tailscale.sh
@@ -425,15 +440,17 @@ cd /home/wheeltec
         <div class="shell">
           <div class="section-head">
             <div>
-              <h2>Install The NemoClaw Skill</h2>
-              <p>Install the voice-friendly skill into the sandbox from DGX.</p>
+              <h2>安裝 NemoClaw Skill / Install The NemoClaw Skill</h2>
+              <p>從 DGX 將語音友善的小車 skill 安裝到 sandbox。Install the voice-friendly robot skill into the sandbox.</p>
             </div>
           </div>
           <div class="card">
             <pre><code>nemoclaw my-assistant skill install /home/nvidia/cmd-vel-jetson-car</code></pre>
             <p class="note">
-              Fallback: upload the skill folder to
+              備用方式：手動上傳 skill 到
               <code>/sandbox/.openclaw/skills/cmd-vel-jetson-car</code>.
+              <br />
+              <span class="en">Fallback: manually upload the skill folder to the sandbox skills directory.</span>
             </p>
           </div>
         </div>
@@ -443,8 +460,8 @@ cd /home/wheeltec
         <div class="shell">
           <div class="section-head">
             <div>
-              <h2>iPhone Voice Commands</h2>
-              <p>Short phrases work best. Movement defaults to one second when no duration is given.</p>
+              <h2>iPhone 語音指令 / Voice Commands</h2>
+              <p>短句最穩。沒有講秒數時，預設移動一秒。Short phrases work best.</p>
             </div>
           </div>
           <div class="voice-list">
@@ -464,13 +481,13 @@ cd /home/wheeltec
         <div class="shell">
           <div class="section-head">
             <div>
-              <h2>Test And Diagnose</h2>
-              <p>Start with stop, then use a one-second motion test.</p>
+              <h2>測試與診斷 / Test And Diagnose</h2>
+              <p>先測停車，再測一秒短移動。Start with stop, then use a one-second motion test.</p>
             </div>
           </div>
           <div class="grid">
             <div class="card">
-              <h3>REST checks</h3>
+              <h3>REST 檢查 / REST checks</h3>
               <pre><code>curl http://100.64.0.4:5000/health
 curl -X POST http://100.64.0.4:5000/stop
 curl -X POST http://100.64.0.4:5000/command \
@@ -478,20 +495,25 @@ curl -X POST http://100.64.0.4:5000/command \
   -d '{"linear_x":0.1,"angular_z":0.0,"seconds":1}'</code></pre>
             </div>
             <div class="card">
-              <h3>ROS graph check</h3>
+              <h3>ROS graph 檢查 / ROS graph check</h3>
               <pre><code>ros2 topic info /cmd_vel -v</code></pre>
               <p class="note">
-                Expect one publisher from DGX and one subscriber per car. With two cars,
-                <code>Subscription count</code> should be 2.
+                預期會看到 DGX 的 publisher，以及每台小車各一個 subscriber。
+                <br />
+                <span class="en">Expect one DGX publisher and one subscriber per car.</span>
               </p>
             </div>
           </div>
           <div class="card warning" style="margin-top: 18px">
-            <h3>Safety note</h3>
+            <h3>安全提醒 / Safety note</h3>
             <p>
-              If the car keeps moving, immediately send <code>POST /stop</code>. The bridge
-              and helper both send stop signals, but physical robots should always be tested
-              in a clear area.
+              如果小車持續移動，立刻送出 <code>POST /stop</code>。Bridge 和 helper 都有停車保護，
+              但實體車第一次測試仍應放在安全空間。
+              <br />
+              <span class="en">
+                If the car keeps moving, immediately send <code>POST /stop</code>.
+                Always test physical robots in a clear area.
+              </span>
             </p>
           </div>
         </div>
@@ -500,7 +522,7 @@ curl -X POST http://100.64.0.4:5000/command \
 
     <footer>
       <div class="shell">
-        Built for NemoClaw, DGX Spark, ROS 2, and Wheeltec/Jetson robot cars.
+        NemoClaw + DGX Spark + ROS 2 + Wheeltec / Jetson robot cars.
       </div>
     </footer>
   </body>
