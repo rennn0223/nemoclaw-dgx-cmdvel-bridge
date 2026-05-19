@@ -2,6 +2,12 @@
 
 Control physical Wheeltec/Jetson robot cars with NemoClaw natural language commands through a DGX Spark REST bridge.
 
+Project page:
+
+```text
+https://rennn0223.github.io/nemoclaw-dgx-cmdvel-bridge/
+```
+
 ```text
 NemoClaw / sandbox
   -> HTTP REST /command or /stop

@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NemoClaw DGX cmd_vel Bridge</title>
+    <meta
+      name="description"
+      content="Deploy a DGX Spark REST bridge for NemoClaw voice control of ROS 2 /cmd_vel Wheeltec and Jetson robot cars."
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17212b;
+        --muted: #5d6975;
+        --line: #d8dee5;
+        --panel: #f7f9fb;
+        --paper: #ffffff;
+        --accent: #0f766e;
+        --accent-ink: #0b4f4a;
+        --blue: #1d4ed8;
+        --warn: #9a3412;
+        --code: #101923;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        color: var(--ink);
+        background: #eef2f6;
+        line-height: 1.55;
+      }
+
+      a {
+        color: var(--blue);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+
+      .shell {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px;
+      }
+
+      header {
+        background: var(--paper);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 16px 28px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 760;
+      }
+
+      .brand-mark {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: #0f766e;
+        position: relative;
+      }
+
+      .brand-mark::after {
+        content: "";
+        position: absolute;
+        inset: 7px;
+        border: 2px solid #ffffff;
+        border-left: 0;
+        border-bottom: 0;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 14px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+        gap: 38px;
+        align-items: center;
+        padding: 58px 28px 42px;
+      }
+
+      .eyebrow {
+        color: var(--accent-ink);
+        font-weight: 740;
+        font-size: 14px;
+        margin-bottom: 12px;
+      }
+
+      h1 {
+        font-size: clamp(38px, 5vw, 68px);
+        line-height: 1.02;
+        letter-spacing: 0;
+        margin: 0;
+      }
+
+      .lead {
+        max-width: 680px;
+        color: var(--muted);
+        font-size: 18px;
+        margin: 22px 0 0;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: var(--paper);
+        color: var(--ink);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .button.primary {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .diagram {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+      }
+
+      .node {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 12px 14px;
+        background: var(--panel);
+        margin: 10px 0;
+      }
+
+      .node strong {
+        display: block;
+      }
+
+      .node span {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .arrow {
+        text-align: center;
+        color: var(--accent);
+        font-weight: 800;
+      }
+
+      main {
+        background: var(--paper);
+        border-top: 1px solid var(--line);
+      }
+
+      section {
+        padding: 38px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      h2 {
+        font-size: 28px;
+        margin: 0 0 12px;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        font-size: 18px;
+        margin: 22px 0 10px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 18px;
+      }
+
+      .section-head p,
+      .note {
+        color: var(--muted);
+        margin: 0;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 18px;
+        background: var(--paper);
+      }
+
+      .card h3 {
+        margin-top: 0;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 0 9px;
+        border-radius: 5px;
+        color: var(--accent-ink);
+        background: #dff4ef;
+        font-size: 13px;
+        font-weight: 740;
+      }
+
+      pre {
+        margin: 12px 0 0;
+        padding: 14px;
+        overflow-x: auto;
+        border-radius: 7px;
+        background: var(--code);
+        color: #edf5f3;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      code {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      }
+
+      ul {
+        padding-left: 20px;
+      }
+
+      .warning {
+        border-left: 4px solid var(--warn);
+        background: #fff7ed;
+      }
+
+      .voice-list {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .voice-list div {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        padding: 12px;
+        background: var(--panel);
+        text-align: center;
+        font-weight: 740;
+      }
+
+      footer {
+        color: var(--muted);
+        padding: 26px 28px;
+        text-align: center;
+      }
+
+      @media (max-width: 860px) {
+        .nav {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          padding-top: 36px;
+        }
+
+        .grid,
+        .voice-list {
+          grid-template-columns: 1fr;
+        }
+
+        .section-head {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="nav">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>NemoClaw DGX cmd_vel Bridge</span>
+        </div>
+        <div class="nav-links">
+          <a href="#install">Install</a>
+          <a href="#modes">Modes</a>
+          <a href="#voice">Voice</a>
+          <a href="https://github.com/rennn0223/nemoclaw-dgx-cmdvel-bridge">GitHub</a>
+        </div>
+      </nav>
+
+      <div class="shell hero">
+        <div>
+          <div class="eyebrow">ROS 2 /cmd_vel control through DGX Spark</div>
+          <h1>Voice control for Wheeltec and Jetson robot cars.</h1>
+          <p class="lead">
+            A small REST bridge lets NemoClaw send safe timed motion commands to one
+            or more physical robot cars over ROS 2. Use normal LAN discovery when the
+            cars are nearby, or Tailscale with FastDDS discovery when they are remote.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="#install">Start deploying</a>
+            <a class="button" href="https://github.com/rennn0223/nemoclaw-dgx-cmdvel-bridge">View repository</a>
+          </div>
+        </div>
+
+        <div class="diagram" aria-label="Control pipeline diagram">
+          <div class="node">
+            <strong>NemoClaw / sandbox</strong>
+            <span>Voice or TUI command</span>
+          </div>
+          <div class="arrow">↓ REST /command</div>
+          <div class="node">
+            <strong>DGX Spark</strong>
+            <span>Flask bridge publishes ROS 2 Twist</span>
+          </div>
+          <div class="arrow">↓ /cmd_vel</div>
+          <div class="node">
+            <strong>Wheeltec / Jetson car(s)</strong>
+            <span>Subscribe and drive motors</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="install">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2>Quick Install</h2>
+              <p>Install the DGX or Jetson launch scripts directly from GitHub.</p>
+            </div>
+          </div>
+          <div class="grid">
+            <div class="card">
+              <span class="badge">DGX Spark</span>
+              <pre><code>curl -fsSL https://raw.githubusercontent.com/rennn0223/nemoclaw-dgx-cmdvel-bridge/main/install.sh | \
+  ROLE=dgx GITHUB_REPO=rennn0223/nemoclaw-dgx-cmdvel-bridge bash</code></pre>
+            </div>
+            <div class="card">
+              <span class="badge">Jetson / Wheeltec</span>
+              <pre><code>curl -fsSL https://raw.githubusercontent.com/rennn0223/nemoclaw-dgx-cmdvel-bridge/main/install.sh | \
+  ROLE=jetson GITHUB_REPO=rennn0223/nemoclaw-dgx-cmdvel-bridge bash</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="modes">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2>Choose A Network Mode</h2>
+              <p>Use one mode at a time. Do not mix LAN discovery with the Tailscale-only FastDDS profile.</p>
+            </div>
+          </div>
+          <div class="grid">
+            <div class="card">
+              <h3>Mode A: Same Wi-Fi / LAN</h3>
+              <p>Use when DGX can already see car topics with <code>ros2 topic list -t</code>.</p>
+              <pre><code># DGX
+cd /home/nvidia
+./auto_lan.sh
+
+# Jetson
+cd /home/wheeltec
+./wheeltec_bringup_lan.sh</code></pre>
+            </div>
+            <div class="card">
+              <h3>Mode B: Different Networks / Tailscale</h3>
+              <p>Use when the cars are remote or LAN multicast discovery does not work.</p>
+              <pre><code># DGX
+cd /home/nvidia
+./auto_tailscale.sh
+
+# Jetson
+cd /home/wheeltec
+./wheeltec_bringup_tailscale.sh</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2>Install The NemoClaw Skill</h2>
+              <p>Install the voice-friendly skill into the sandbox from DGX.</p>
+            </div>
+          </div>
+          <div class="card">
+            <pre><code>nemoclaw my-assistant skill install /home/nvidia/cmd-vel-jetson-car</code></pre>
+            <p class="note">
+              Fallback: upload the skill folder to
+              <code>/sandbox/.openclaw/skills/cmd-vel-jetson-car</code>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="voice">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2>iPhone Voice Commands</h2>
+              <p>Short phrases work best. Movement defaults to one second when no duration is given.</p>
+            </div>
+          </div>
+          <div class="voice-list">
+            <div>前進</div>
+            <div>前進兩秒</div>
+            <div>左轉一秒</div>
+            <div>右轉五秒</div>
+            <div>慢慢前進</div>
+            <div>後退</div>
+            <div>停車</div>
+            <div>不要動</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2>Test And Diagnose</h2>
+              <p>Start with stop, then use a one-second motion test.</p>
+            </div>
+          </div>
+          <div class="grid">
+            <div class="card">
+              <h3>REST checks</h3>
+              <pre><code>curl http://100.64.0.4:5000/health
+curl -X POST http://100.64.0.4:5000/stop
+curl -X POST http://100.64.0.4:5000/command \
+  -H "Content-Type: application/json" \
+  -d '{"linear_x":0.1,"angular_z":0.0,"seconds":1}'</code></pre>
+            </div>
+            <div class="card">
+              <h3>ROS graph check</h3>
+              <pre><code>ros2 topic info /cmd_vel -v</code></pre>
+              <p class="note">
+                Expect one publisher from DGX and one subscriber per car. With two cars,
+                <code>Subscription count</code> should be 2.
+              </p>
+            </div>
+          </div>
+          <div class="card warning" style="margin-top: 18px">
+            <h3>Safety note</h3>
+            <p>
+              If the car keeps moving, immediately send <code>POST /stop</code>. The bridge
+              and helper both send stop signals, but physical robots should always be tested
+              in a clear area.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="shell">
+        Built for NemoClaw, DGX Spark, ROS 2, and Wheeltec/Jetson robot cars.
+      </div>
+    </footer>
+  </body>
+</html>
