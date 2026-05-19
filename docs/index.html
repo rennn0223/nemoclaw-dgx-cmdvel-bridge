@@ -21,6 +21,9 @@
         --blue: #1d4ed8;
         --warn: #9a3412;
         --code: #101923;
+        --code-line: #263445;
+        --shadow: 0 16px 36px rgba(23, 33, 43, 0.08);
+        --shadow-soft: 0 8px 20px rgba(23, 33, 43, 0.06);
       }
 
       * {
@@ -147,6 +150,13 @@
         color: var(--ink);
         font-weight: 700;
         text-decoration: none;
+        transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-soft);
+        border-color: #b7c4cf;
       }
 
       .button.primary {
@@ -160,6 +170,7 @@
         border: 1px solid var(--line);
         border-radius: 8px;
         padding: 18px;
+        box-shadow: var(--shadow);
       }
 
       .node {
@@ -231,6 +242,7 @@
         border-radius: 8px;
         padding: 18px;
         background: var(--paper);
+        box-shadow: var(--shadow-soft);
       }
 
       .card h3 {
@@ -249,11 +261,48 @@
         font-weight: 740;
       }
 
+      .code-block {
+        margin-top: 12px;
+        border: 1px solid #1d2a38;
+        border-radius: 8px;
+        background: var(--code);
+        overflow: hidden;
+      }
+
+      .code-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 38px;
+        padding: 0 10px 0 13px;
+        border-bottom: 1px solid var(--code-line);
+        color: #9fb1c4;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .copy-button {
+        min-height: 28px;
+        padding: 0 10px;
+        border: 1px solid #3a4a5d;
+        border-radius: 5px;
+        color: #edf5f3;
+        background: #1b2836;
+        font: inherit;
+        font-weight: 760;
+        cursor: pointer;
+      }
+
+      .copy-button:hover {
+        border-color: #5d7086;
+        background: #26384a;
+      }
+
       pre {
-        margin: 12px 0 0;
+        margin: 0;
         padding: 14px;
         overflow-x: auto;
-        border-radius: 7px;
         background: var(--code);
         color: #edf5f3;
         font-size: 13px;
@@ -380,13 +429,13 @@
           <div class="grid">
             <div class="card">
               <span class="badge">DGX Spark</span>
-              <pre><code>curl -fsSL https://raw.githubusercontent.com/rennn0223/nemoclaw-dgx-cmdvel-bridge/main/install.sh | \
-  ROLE=dgx GITHUB_REPO=rennn0223/nemoclaw-dgx-cmdvel-bridge bash</code></pre>
+              <div class="code-block"><div class="code-toolbar"><span>Command</span><button class="copy-button" type="button">Copy</button></div><pre><code>curl -fsSL https://raw.githubusercontent.com/rennn0223/nemoclaw-dgx-cmdvel-bridge/main/install.sh | \
+  ROLE=dgx GITHUB_REPO=rennn0223/nemoclaw-dgx-cmdvel-bridge bash</code></pre></div>
             </div>
             <div class="card">
               <span class="badge">Jetson / Wheeltec</span>
-              <pre><code>curl -fsSL https://raw.githubusercontent.com/rennn0223/nemoclaw-dgx-cmdvel-bridge/main/install.sh | \
-  ROLE=jetson GITHUB_REPO=rennn0223/nemoclaw-dgx-cmdvel-bridge bash</code></pre>
+              <div class="code-block"><div class="code-toolbar"><span>Command</span><button class="copy-button" type="button">Copy</button></div><pre><code>curl -fsSL https://raw.githubusercontent.com/rennn0223/nemoclaw-dgx-cmdvel-bridge/main/install.sh | \
+  ROLE=jetson GITHUB_REPO=rennn0223/nemoclaw-dgx-cmdvel-bridge bash</code></pre></div>
             </div>
           </div>
         </div>
@@ -409,13 +458,13 @@
                 <br />
                 <span class="en">Use normal ROS 2 LAN discovery when DGX can already see car topics.</span>
               </p>
-              <pre><code># DGX
+              <div class="code-block"><div class="code-toolbar"><span>Command</span><button class="copy-button" type="button">Copy</button></div><pre><code># DGX
 cd /home/nvidia
 ./auto_lan.sh
 
 # Jetson
 cd /home/wheeltec
-./wheeltec_bringup_lan.sh</code></pre>
+./wheeltec_bringup_lan.sh</code></pre></div>
             </div>
             <div class="card">
               <h3>模式 B：不同網域 / Tailscale</h3>
@@ -424,13 +473,13 @@ cd /home/wheeltec
                 <br />
                 <span class="en">Use Tailscale + FastDDS discovery for remote or cross-network cars.</span>
               </p>
-              <pre><code># DGX
+              <div class="code-block"><div class="code-toolbar"><span>Command</span><button class="copy-button" type="button">Copy</button></div><pre><code># DGX
 cd /home/nvidia
 ./auto_tailscale.sh
 
 # Jetson
 cd /home/wheeltec
-./wheeltec_bringup_tailscale.sh</code></pre>
+./wheeltec_bringup_tailscale.sh</code></pre></div>
             </div>
           </div>
         </div>
@@ -445,7 +494,7 @@ cd /home/wheeltec
             </div>
           </div>
           <div class="card">
-            <pre><code>nemoclaw my-assistant skill install /home/nvidia/cmd-vel-jetson-car</code></pre>
+            <div class="code-block"><div class="code-toolbar"><span>Command</span><button class="copy-button" type="button">Copy</button></div><pre><code>nemoclaw my-assistant skill install /home/nvidia/cmd-vel-jetson-car</code></pre></div>
             <p class="note">
               備用方式：手動上傳 skill 到
               <code>/sandbox/.openclaw/skills/cmd-vel-jetson-car</code>.
@@ -488,15 +537,15 @@ cd /home/wheeltec
           <div class="grid">
             <div class="card">
               <h3>REST 檢查 / REST checks</h3>
-              <pre><code>curl http://100.64.0.4:5000/health
+              <div class="code-block"><div class="code-toolbar"><span>Command</span><button class="copy-button" type="button">Copy</button></div><pre><code>curl http://100.64.0.4:5000/health
 curl -X POST http://100.64.0.4:5000/stop
 curl -X POST http://100.64.0.4:5000/command \
   -H "Content-Type: application/json" \
-  -d '{"linear_x":0.1,"angular_z":0.0,"seconds":1}'</code></pre>
+  -d '{"linear_x":0.1,"angular_z":0.0,"seconds":1}'</code></pre></div>
             </div>
             <div class="card">
               <h3>ROS graph 檢查 / ROS graph check</h3>
-              <pre><code>ros2 topic info /cmd_vel -v</code></pre>
+              <div class="code-block"><div class="code-toolbar"><span>Command</span><button class="copy-button" type="button">Copy</button></div><pre><code>ros2 topic info /cmd_vel -v</code></pre></div>
               <p class="note">
                 預期會看到 DGX 的 publisher，以及每台小車各一個 subscriber。
                 <br />
@@ -525,5 +574,29 @@ curl -X POST http://100.64.0.4:5000/command \
         NemoClaw + DGX Spark + ROS 2 + Wheeltec / Jetson robot cars.
       </div>
     </footer>
+    <script>
+      for (const block of document.querySelectorAll('.code-block')) {
+        const button = block.querySelector('.copy-button');
+        const code = block.querySelector('code');
+        if (!button || !code) continue;
+        button.addEventListener('click', async () => {
+          const text = code.innerText.trim();
+          try {
+            await navigator.clipboard.writeText(text);
+            button.textContent = 'Copied';
+            setTimeout(() => {
+              button.textContent = 'Copy';
+            }, 1400);
+          } catch (error) {
+            button.textContent = 'Select';
+            const range = document.createRange();
+            range.selectNodeContents(code);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+        });
+      }
+    </script>
   </body>
 </html>
