@@ -193,17 +193,23 @@ ros2 topic info /cmd_vel -v --no-daemon
 
 ## Install The NemoClaw Skill
 
-From the machine that has `nemoclaw` / `openshell` access:
+On DGX, place or clone the skill folder at:
 
-```bash
-openshell sandbox upload my-assistant nemoclaw-cmd-vel-jetson \
-  /sandbox/.openclaw/skills/cmd-vel-jetson-car
+```text
+/home/nvidia/cmd-vel-jetson-car
 ```
 
-Or, if using NemoClaw's skill installer from DGX:
+Then install it into the sandbox:
 
 ```bash
 nemoclaw my-assistant skill install /home/nvidia/cmd-vel-jetson-car
+```
+
+If you are not using the NemoClaw skill installer, you can manually upload the folder as a fallback:
+
+```bash
+openshell sandbox upload my-assistant cmd-vel-jetson-car \
+  /sandbox/.openclaw/skills/cmd-vel-jetson-car
 ```
 
 The skill is optimized for short iPhone voice input:

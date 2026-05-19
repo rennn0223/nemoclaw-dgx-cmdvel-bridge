@@ -346,11 +346,10 @@ scp dgx_cmd_vel_rest_api.py start_dgx_cmd_vel_pipeline.sh auto.sh \
   nvidia@100.64.0.4:/home/nvidia/
 ```
 
-Copy updated skill/helper to sandbox:
+Copy/update the skill folder on DGX, then install it to sandbox:
 
 ```bash
-openshell sandbox upload my-assistant nemoclaw-cmd-vel-jetson \
-  /sandbox/.openclaw/skills/cmd-vel-jetson-car
+nemoclaw my-assistant skill install /home/nvidia/cmd-vel-jetson-car
 ```
 
 On DGX, stop old processes:
@@ -390,17 +389,22 @@ The command output should include both `command` and `stop` results.
 
 ## 7. Install The NemoClaw Skill
 
-Upload the skill folder to sandbox:
+On DGX, keep the skill folder at:
 
-```bash
-openshell sandbox upload my-assistant nemoclaw-cmd-vel-jetson \
-  /sandbox/.openclaw/skills/cmd-vel-jetson-car
+```text
+/home/nvidia/cmd-vel-jetson-car
 ```
 
-Update the skill the same way whenever `SKILL.md` or `scripts/car_cmd.py` changes:
+Install or update it into the sandbox:
 
 ```bash
-openshell sandbox upload my-assistant nemoclaw-cmd-vel-jetson \
+nemoclaw my-assistant skill install /home/nvidia/cmd-vel-jetson-car
+```
+
+Manual fallback:
+
+```bash
+openshell sandbox upload my-assistant cmd-vel-jetson-car \
   /sandbox/.openclaw/skills/cmd-vel-jetson-car
 ```
 
